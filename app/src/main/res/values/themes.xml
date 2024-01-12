@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.HangmanApp" parent="android:Theme.Material.Light.NoActionBar" >
+        <!-- Customize your theme here. -->
+        <!-- ... other style items ... -->
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:fontFamily">@font/itim_regular</item>// Eliminar la SplashScreen default de android
+    </style>
+</resources>

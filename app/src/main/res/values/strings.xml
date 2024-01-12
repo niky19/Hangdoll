@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">HangmanApp</string>
+    <string-array name="difficulty">
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
+    </string-array>
+
+    <string-array name="casual">
+        <item>PEONIA</item>
+        <item>ROSA</item>
+        <item>MARGARITA</item>
+        <item>CLAVEL</item>
+        <item>GIRASOL</item>
+        <item>ORQUIDEA</item>
+        <item>LAVANDA</item>
+        <item>GERANIO</item>
+        <item>TULIPAN</item>
+        <item>JAZMIN</item>
+    </string-array>
+
+
+    <string-array name="hardcore">
+        <item>LILLIUM</item>
+        <item>PHALAENOPSIS</item>
+        <item>HELIANTHUS</item>
+        <item>ORCHIDACEAE</item>
+        <item>LAVANDULA</item>
+        <item>ACACIA</item>
+        <item>TULIPA</item>
+        <item>PAEONIA</item>
+        <item>ECHINACEA</item>
+        <item>LUPINUS</item>
+    </string-array>
+</resources>
