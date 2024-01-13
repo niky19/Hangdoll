@@ -33,7 +33,8 @@ fun SplashScreen(navController: NavController) {
     var startAnimation by remember { mutableStateOf(false) }
     val alphaAnim = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
-        animationSpec = tween(durationMillis = 3000), label = "animation"
+        animationSpec = tween(durationMillis = 3000),
+        label = "animation"
     )
     LaunchedEffect(key1 = true) {
         startAnimation = true
@@ -43,9 +44,11 @@ fun SplashScreen(navController: NavController) {
     }
     Splash(alphaAnim.value)
 }
+
 @Composable
 fun Splash(alphaAnim: Float) {
-    Column(modifier = Modifier.fillMaxSize(),
+    Column(
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -55,17 +58,22 @@ fun Splash(alphaAnim: Float) {
             alpha = alphaAnim,
             modifier = Modifier.size(220.dp) // Change the value to your desired size
         )
-        AnimatedText(text = "hangdoll.", fontSize = 28.sp, fontFamily = FontFamily(Font(resId = R.font.itim_regular)))
+        AnimatedText(
+            text = "hangdoll.",
+            fontSize = 28.sp,
+            fontFamily = FontFamily(Font(resId = R.font.itim_regular))
+        )
     }
 }
 
 @Composable
-fun AnimatedText(text: String, fontSize : TextUnit, fontFamily: FontFamily) {
+fun AnimatedText(text: String, fontSize: TextUnit, fontFamily: FontFamily) {
     var index by remember { mutableStateOf(0) }
 
     val animatedIndex by animateIntAsState(
         targetValue = index,
-        animationSpec = tween(durationMillis = 500, easing = LinearEasing), label = ""
+        animationSpec = tween(durationMillis = 500, easing = LinearEasing),
+        label = ""
     )
 
     LaunchedEffect(key1 = text) {
@@ -75,7 +83,7 @@ fun AnimatedText(text: String, fontSize : TextUnit, fontFamily: FontFamily) {
         }
     }
 
-    Text(text = text.substring(0, animatedIndex),  fontFamily = fontFamily, fontSize = fontSize)
+    Text(text = text.substring(0, animatedIndex), fontFamily = fontFamily, fontSize = fontSize)
 }
 
 @Preview(showBackground = true)

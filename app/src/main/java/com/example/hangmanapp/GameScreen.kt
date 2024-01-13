@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -38,7 +39,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.delay
 import java.util.Locale
-import kotlin.random.Random
 
 
 @Composable
@@ -74,7 +74,7 @@ fun GameScreen(navController: NavController) {
         if (difficulty == "Hardcore") {
             if (remainingSeconds == 0.toLong()) {
                 result = "You Lost!"
-                navToResultScreen(navController , result)
+                navToResultScreen(navController, result, secretWord, difficulty)
             }
             while (remainingSeconds > 0) {
                 delay(1000L) // Espera un segundo
@@ -104,7 +104,7 @@ fun GameScreen(navController: NavController) {
             currentImage = hangdollImage[usedLetters.length]
             if (attemptsLeft == 0) {
                 result = "You Lost!"
-                navToResultScreen(navController, result)
+                navToResultScreen(navController, result, secretWord, difficulty)
 
             }
         }
@@ -113,121 +113,138 @@ fun GameScreen(navController: NavController) {
     LaunchedEffect(hashedSecretWord) {
         if (hashedSecretWord != "" && hashedSecretWord == secretWord) {
             result = "You Won!"
-            navToResultScreen(navController, result)
+            navToResultScreen(navController, result, secretWord, difficulty)
 
         }
     }
+    val gameBackgroundImage = painterResource(id = R.drawable.gamebackground)
 
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Draw the background image
+        Image(
+            painter = gameBackgroundImage,
+            contentDescription = "Game Background Image",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds
+        )
 
-
-    ConstraintLayout(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        val (logo, specs, errorCounterText, image, correctLettersBox, keyboardBox, spacer, myButton) = createRefs()
-        Text(text = "hangdoll.",
-            fontFamily = FontFamily(Font(resId = R.font.itim_regular)),
-            modifier = Modifier.constrainAs(logo) {
-                top.linkTo(parent.top, margin = 16.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            })
-        Text(text = "Difficulty: $difficulty",
-            fontFamily = FontFamily(Font(resId = R.font.itim_regular)),
-            modifier = Modifier.constrainAs(specs) {
-                top.linkTo(logo.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(errorCounterText.top)
-            })
-
-        Text(text = "Attempts left $attemptsLeft",
-            fontFamily = FontFamily(Font(resId = R.font.itim_regular)),
-            modifier = Modifier.constrainAs(errorCounterText) {
-                top.linkTo(specs.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(image.top)
-            })
-        if (difficulty == "Hardcore") {
-            TimerScreen(timerValue = remainingSeconds)
-        }
-
-        Image(painter = painterResource(id = currentImage),
-            contentDescription = "Game Image",
-            modifier = Modifier
-                .size(250.dp)
-                .constrainAs(image) {
-                    top.linkTo(errorCounterText.bottom, margin = 16.dp)
+        ConstraintLayout(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            val (logo, specs, errorCounterText, image, correctLettersBox, keyboardBox, spacer, myButton) = createRefs()
+            Text(text = "hangdoll.",
+                fontFamily = FontFamily(Font(resId = R.font.itim_regular)),
+                modifier = Modifier.constrainAs(logo) {
+                    top.linkTo(parent.top, margin = 16.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    bottom.linkTo(correctLettersBox.top, margin = 16.dp)
+                })
+            Text(text = "Game mode: $difficulty",
+                fontFamily = FontFamily(Font(resId = R.font.itim_regular)),
+                modifier = Modifier.constrainAs(specs) {
+                    top.linkTo(logo.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(errorCounterText.top)
                 })
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(70.dp)
-                .background(Color.LightGray)
-                .constrainAs(correctLettersBox) {
-                    top.linkTo(image.bottom)
+            Text(text = "Attempts left $attemptsLeft",
+                fontFamily = FontFamily(Font(resId = R.font.itim_regular)),
+                modifier = Modifier.constrainAs(errorCounterText) {
+                    top.linkTo(specs.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    bottom.linkTo(keyboardBox.top, margin = 16.dp)
-                },
-        ) {
-
-            Text(
-                text = hashedSecretWord,
-                modifier = Modifier.fillMaxSize(),
-                textAlign = TextAlign.Center,
-                fontSize = 50.sp,
-                fontFamily = FontFamily(Font(resId = R.font.itim_regular))
-            )
-
-
-        }
-        Button(onClick = {
-            if (clueCount < 2) {
-                val char = getUnrevealedChar(secretWord, hashedSecretWord)
-                clickedLetter = char
-                clueCount++
+                    bottom.linkTo(image.top)
+                })
+            if (difficulty == "Hardcore") {
+                TimerScreen(timerValue = remainingSeconds)
             }
-        }, enabled = difficulty != "Hardcore", modifier = Modifier.constrainAs(myButton) {
-                top.linkTo(correctLettersBox.bottom, margin = 8.dp)
-                top.linkTo(parent.top)
-                end.linkTo(parent.end)
-            }) {
-            Text("My Button")
-        }
-        Box(
-            modifier = Modifier
+
+            Image(painter = painterResource(id = currentImage),
+                contentDescription = "Game Image",
+                modifier = Modifier
+                    .size(250.dp)
+                    .constrainAs(image) {
+                        top.linkTo(errorCounterText.bottom, margin = 16.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(correctLettersBox.top, margin = 16.dp)
+                    })
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+                    .background(Color.Transparent)
+                    .constrainAs(correctLettersBox) {
+                        top.linkTo(image.bottom)
+                        start.linkTo(correctLettersBox.start)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(keyboardBox.top, margin = 16.dp)
+                    },
+            ) {
+
+                Text(
+                    text = hashedSecretWord,
+                    modifier = Modifier.fillMaxSize(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 50.sp,
+                    fontFamily = FontFamily(Font(resId = R.font.itim_regular))
+                )
+
+
+            }
+            Button(
+
+                onClick = {
+                    if (clueCount < 2) {
+                        val char = getUnrevealedChar(secretWord, hashedSecretWord)
+                        clickedLetter = char
+                        clueCount++
+                    }
+                },
+                enabled = difficulty != "Hardcore",
+                modifier = Modifier
+                    .size(50.dp)
+                    .constrainAs(myButton) {
+                        bottom.linkTo(parent.bottom)
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end, margin = 22.dp)
+                    }) {
+                Text("\uD83D\uDCA1")
+            }
+
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+                    .background(Color.Transparent)
+                    .constrainAs(keyboardBox) {
+                        top.linkTo(correctLettersBox.bottom, margin = 8.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom, margin = 8.dp)
+                    }, contentAlignment = Alignment.Center
+            ) {
+                Keyboard(onLetterClick = { clickedLetter = it }, clickedLetters)
+
+            }
+            Spacer(modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
-                .background(Color.LightGray)
-                .constrainAs(keyboardBox) {
-                    top.linkTo(correctLettersBox.bottom, margin = 8.dp)
+                .height(30.dp)
+                .background(Color.Transparent)
+                .constrainAs(spacer) {
+                    top.linkTo(keyboardBox.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom, margin = 8.dp)
-                }, contentAlignment = Alignment.Center
-        ) {
-            Keyboard(onLetterClick = { clickedLetter = it }, clickedLetters)
+                    bottom.linkTo(parent.bottom)
+                })
+
 
         }
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(30.dp)
-            .background(Color.White)
-            .constrainAs(spacer) {
-                top.linkTo(keyboardBox.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
-            })
-
 
     }
-
 }
 
 fun getUnrevealedChar(secretWord: String, hashedSecretWord: String): String {
@@ -239,7 +256,7 @@ fun getUnrevealedChar(secretWord: String, hashedSecretWord: String): String {
         println(hashedSecretWord[randomIndex])
         return getUnrevealedChar(secretWord, hashedSecretWord)
     }
-    return secretWord[randomIndex].toString()
+    return secretWord[randomIndex].toString().lowercase()
 }
 
 
@@ -261,9 +278,11 @@ fun revealLetter(
 }
 
 
-fun navToResultScreen(navController: NavController, ressult: String) {
+fun navToResultScreen(
+    navController: NavController, ressult: String, secretWord: String, difficulty: String
+) {
     navController.popBackStack()
-    navController.navigate("result_screen/$ressult")
+    navController.navigate("result_screen/$ressult/$difficulty/$secretWord")
 }
 
 
@@ -276,14 +295,14 @@ fun getRandomWord(difficulty: String): String {
         Word("Jukebox", "Music"),
         Word("Radio", "Music"),
         Word("Cinema", "Entertainment"),
-      Word("Circus", "Entertainment"),
+        Word("Circus", "Entertainment"),
         Word("Theatre", "Entertainment"),
         Word("ArtDeco", "Art"),
         Word("Picasso", "Art"),
         Word("Modernism", "Art"),
 
 
-    )
+        )
     val hardWordList = listOf(
         Word("Chanel", "Celebrities"),
         Word("Monroe", "Celebrities"),
@@ -316,8 +335,6 @@ fun hashWord(word: String): String {
     return hashedWord
 
 }
-
-
 
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -366,8 +383,8 @@ fun Keyboard(onLetterClick: (String) -> Unit, clickedLetters: MutableList<String
                 Text(
                     text = letter,
                     modifier = Modifier.wrapContentWidth(),
-                    fontFamily = FontFamily(Font(resId = R.font.opensans_regular)),
-                    color = Color.White,
+                    fontFamily = FontFamily(Font(resId = R.font.itim_regular)),
+                    color = Color(0xFFC7BBBB),
                     fontSize = 14.sp
                 )
             }
@@ -382,25 +399,20 @@ fun TimerScreen(
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
     ) {
-        val (text, startButton, pauseButton, stopButton) = createRefs()
+        val (logo, specs, errorCounterText, image, correctLettersBox, keyboardBox, spacer, myButton, text) = createRefs()
 
-        Text(text = timerValue.formatTime(),
+        Text(text = timerValue.toString(),
             fontSize = 24.sp,
+            fontFamily = FontFamily(Font(resId = R.font.itim_regular)),
             modifier = Modifier.constrainAs(text) {
-                top.linkTo(parent.top)
+                top.linkTo(correctLettersBox.bottom)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
+                bottom.linkTo(keyboardBox.top)
             })
     }
 }
 
-
-fun Long.formatTime(): String {
-    val hours = this / 3600
-    val minutes = (this % 3600) / 60
-    val remainingSeconds = this % 60
-    return String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds)
-}
 
 @Preview
 @Composable

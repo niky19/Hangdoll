@@ -21,15 +21,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             HangmanAppTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
                     NavHost(
-                        navController = navController,
-                        startDestination = Routes.SplashScreen.route
+                        navController = navController, startDestination = Routes.SplashScreen.route
                     ) {
                         composable(Routes.SplashScreen.route) { SplashScreen(navController) }
 
@@ -39,8 +36,10 @@ class MainActivity : ComponentActivity() {
                             GameScreen(navController)
 
                         }
-                        composable("result_screen/{result}") { backStackEntry ->
+                        composable("result_screen/{result}/{difficulty}/{secretword}") { backStackEntry ->
                             val result = backStackEntry.arguments?.getString("result")
+                            val difficulty = backStackEntry.arguments?.getString("difficulty")
+                            val secretWord = backStackEntry.arguments?.getString("secretword")
                             ResultScreen(navController)
                         }
                     }

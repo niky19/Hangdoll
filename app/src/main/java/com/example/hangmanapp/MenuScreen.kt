@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -49,12 +50,15 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
+import androidx.compose.ui.res.painterResource
 
 val doll_green = Color(0xFF405339)
 val doll_blue = Color(0xFF7EAFBB)
 val dark_text = Color(0xFF412525)
-val light_text = Color(0xFFEDEDED)
+val light_text = Color(0xFFC7BBBB)
 val doll_lilac = Color(0xFFAF7F99)
+val gradient_1 = Color(0xFFD49DAB)
+val gradient_2 = Color(0xFF5D4155)
 
 
 @Composable
@@ -67,7 +71,7 @@ fun MenuScreen(navController: NavController) {
             painter = backgroundImage,
             contentDescription = "Background Image",
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillBounds // This will make the image scale to fill the entire screen
+            contentScale = ContentScale.FillBounds
         )
         ConstraintLayout {
             val (spacer, logo, slogan, mode, buttons) = createRefs()
@@ -97,7 +101,7 @@ fun MenuScreen(navController: NavController) {
             Text(text = " hangdoll",
                 fontSize = 22.sp,
                 fontFamily = FontFamily(Font(resId = R.font.itim_regular)),
-                textAlign = TextAlign.Center, // This will center align the text
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(bottom = 12.dp)
                     .constrainAs(slogan) {
@@ -203,7 +207,7 @@ fun MyButtons(navController: NavController, modifier: Modifier, selectedDifficul
             },
             shape = MaterialTheme.shapes.medium,
             modifier = Modifier
-                .padding(top = 8.dp) // Reduced padding here
+                .padding(top = 8.dp)
                 .background(Color.Transparent)
                 .width(150.dp),
             colors = ButtonDefaults.textButtonColors(
@@ -221,11 +225,11 @@ fun MyButtons(navController: NavController, modifier: Modifier, selectedDifficul
             onClick = { showDialog = true },
             shape = MaterialTheme.shapes.medium,
             modifier = Modifier
-                .padding(top = 8.dp) // Reduced padding here
+                .padding(top = 8.dp)
                 .background(Color.Transparent)
                 .width(150.dp),
             colors = ButtonDefaults.textButtonColors(
-                containerColor = doll_green, // Set the button color here
+                containerColor = doll_green,
             )
         ) {
             Text(
@@ -240,24 +244,23 @@ fun MyButtons(navController: NavController, modifier: Modifier, selectedDifficul
 
 @Composable
 fun HowToPlayDialiog(show: Boolean, onDismiss: () -> Unit) {
-    val dialogBackgroundImage = painterResource(id = R.drawable.dialogbackground)
     if (show) {
         Dialog(onDismissRequest = { onDismiss() }) {
-            Image(
-                painter = dialogBackgroundImage,
-                contentDescription = "Background Image",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillBounds // This will make the image scale to fill the entire screen
-            )
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .background(Color.Gray)
+                    .background(
+                        brush = Brush.radialGradient(
+                            listOf(
+                                gradient_1, gradient_2
+                            )
+                        )
+                    )
                     .fillMaxWidth()
-                    .height(300.dp)
+                    .height(500.dp)
+                    .shadow(4.dp, shape = MaterialTheme.shapes.medium),
             ) {
-
                 Text(
                     text = """
                     Discover the hidden word before the drawing of the hang doll man is completed!
@@ -280,12 +283,8 @@ fun HowToPlayDialiog(show: Boolean, onDismiss: () -> Unit) {
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily(Font(resId = R.font.itim_regular)),
                     color = Color.Black,
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Justify,
                     modifier = Modifier.padding(16.dp)
-                        .wrapContentWidth(Alignment.CenterHorizontally)
-                        .fillMaxWidth()
-
-
                 )
 
 
